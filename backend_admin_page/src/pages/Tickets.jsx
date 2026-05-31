@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useCallback, useEffect, useState, useRef, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import client from "../api/client";
@@ -41,9 +41,7 @@ export default function Tickets() {
   const [users, setUsers] = useState([]);
   const [ticketTypes, setTicketTypes] = useState([]);
 
-  useEffect(() => { load(); }, [statusFilter]);
-
-  async function load() {
+  const load = useCallback(async () => {
     try {
       const params = statusFilter ? `?status=${statusFilter}` : "";
       const [tRes, uRes, ttRes] = await Promise.all([
@@ -57,7 +55,11 @@ export default function Tickets() {
     } catch {
       // ignore — client interceptor handles auth errors; network blips are silent
     }
-  }
+  }, [statusFilter]);
+
+  // The page has to re-fetch from the API when the status filter changes.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { load(); }, [load]);
 
   async function openCreate() {
     try {
@@ -339,15 +341,19 @@ function CreateTicketModal({ machines, users, ticketTypes, onSave, onClose }) {
         description: form.description,
         assigned_to: form.assigned_to || null,
         priority: parseInt(form.priority, 10) || 1,
-        steps: steps.map(({ id, ...rest }, i) => ({
-          step_index: i,
-          label: rest.label.trim(),
-          completion_type: rest.completion_type,
-          manual_id: rest.manual_id || null,
-          manual_title: rest.manual_title || null,
-          send_manual_via_whatsapp: rest.send_manual_via_whatsapp || false,
-          completed: false,
-        })),
+        steps: steps.map((step, i) => {
+          const rest = { ...step };
+          delete rest.id;
+          return {
+            step_index: i,
+            label: rest.label.trim(),
+            completion_type: rest.completion_type,
+            manual_id: rest.manual_id || null,
+            manual_title: rest.manual_title || null,
+            send_manual_via_whatsapp: rest.send_manual_via_whatsapp || false,
+            completed: false,
+          };
+        }),
       };
       if (ticketKind === "machine") {
         payload.machine_id = form.machine_id;

@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import { AlertCircle, Loader2 } from "lucide-react";
-import { toast } from "sonner";
 
 export default function Login() {
   const [username, setUsername] = useState("");

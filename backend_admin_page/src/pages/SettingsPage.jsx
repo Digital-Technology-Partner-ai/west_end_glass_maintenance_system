@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { useAutoRefresh } from "../hooks/useAutoRefresh";
 import client from "../api/client";
 import { toast } from "sonner";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import { Plus, Trash2, Tag, Loader2 } from "lucide-react";
 
 export default function SettingsPage() {

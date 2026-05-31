@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { createElement, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useAutoRefresh } from "../hooks/useAutoRefresh";
 import client from "../api/client";
@@ -201,7 +201,7 @@ export default function Dashboard() {
   );
 }
 
-function KpiCard({ label, value, icon: Icon, color, iconColor, to }) {
+function KpiCard({ label, value, icon, color, iconColor, to }) {
   return (
     <Link
       to={to}
@@ -214,7 +214,7 @@ function KpiCard({ label, value, icon: Icon, color, iconColor, to }) {
         </p>
       </div>
       <div className={`rounded-full bg-slate-50 p-3 ${iconColor}`}>
-        <Icon size={22} />
+        {createElement(icon, { size: 22 })}
       </div>
     </Link>
   );

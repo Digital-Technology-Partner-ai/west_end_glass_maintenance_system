@@ -9,7 +9,6 @@ export default function PhotoGallery({ ticketId, steps = [] }) {
     <div style={styles.grid}>
       {photoSteps.map((step) => {
         const filename = step.photo_path.split("/").pop();
-        const token = localStorage.getItem("access_token");
         const src = `${API_BASE}/tickets/${ticketId}/photos/${filename}`;
         return (
           <div key={step.step_index} style={styles.card}>

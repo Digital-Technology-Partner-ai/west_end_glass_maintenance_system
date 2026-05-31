@@ -2,7 +2,7 @@ import { useState, useCallback, useRef } from "react";
 import { useAutoRefresh } from "../hooks/useAutoRefresh";
 import client from "../api/client";
 import { toast } from "sonner";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import {
   FileText, Upload, Trash2, Loader2, X, AlertCircle,
   FileImage, FileType2, Plus,

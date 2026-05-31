@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../hooks/useAuth";
 import { useAutoRefresh } from "../../hooks/useAutoRefresh";
 import client from "../../api/client";
 import { toast } from "sonner";

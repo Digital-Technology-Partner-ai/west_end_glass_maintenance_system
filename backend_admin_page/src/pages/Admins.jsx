@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { useAutoRefresh } from "../hooks/useAutoRefresh";
 import client from "../api/client";
 import { toast } from "sonner";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import {
   Plus, Shield, KeyRound, AlertCircle, Loader2, X, UserX, UserCheck,
 } from "lucide-react";

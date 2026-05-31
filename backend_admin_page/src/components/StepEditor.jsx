@@ -118,9 +118,7 @@ export default function StepEditor({
   const [newLabel, setNewLabel] = useState("");
   const [newType, setNewType] = useState("confirmation");
   const [manuals, setManuals] = useState([]);
-  const [newManualId, setNewManualId] = useState("");
   const [showAttachmentModal, setShowAttachmentModal] = useState(false);
-  const [newSendViaWa, setNewSendViaWa] = useState(false);
 
   useEffect(() => {
     client.get("/manuals").then((r) => setManuals(r.data)).catch(() => {});

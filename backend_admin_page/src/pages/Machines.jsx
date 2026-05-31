@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAutoRefresh } from "../hooks/useAutoRefresh";
 import client from "../api/client";
 import { toast } from "sonner";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import { Plus, Search, MapPin, Copy, Check, AlertCircle, Loader2, X } from "lucide-react";
 
 export default function Machines() {

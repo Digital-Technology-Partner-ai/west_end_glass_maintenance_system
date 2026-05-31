@@ -14,21 +14,19 @@ updated: 2026-05-31
 
 This repository is the West End Glass Maintenance System: a WhatsApp-led field-service and machine-maintenance ticketing platform for West End Glass. Field technicians interact through WhatsApp/NFC-tag initiated machine IDs; administrators use a React web dashboard to manage tickets, users, machines, daily checks, manuals, audit logs, and reporting.
 
-Steve confirmed on 2026-05-31 that the repository has been transferred from the `Virgelsnake` GitHub organisation to the DTP organisation, and that Joe/Joseph Ronnie has been actively working on it. Hudson verified the DTP repository at `Digital-Technology-Partner-ai/west_end_glass_maintenance_system` and cloned a canonical local working copy into DTP Coding Projects. The original Inbox copy remains provenance/source material and currently contains additional untracked marketing assets.
+Steve confirmed on 2026-05-31 that the repository has been transferred from the `Virgelsnake` GitHub organisation to the DTP organisation, and that Joe/Joseph Ronnie has been actively working on it. Hudson verified the DTP repository at `Digital-Technology-Partner-ai/west_end_glass_maintenance_system` and cloned a canonical local working copy into DTP Coding Projects. Steve chose to keep the DTP GitHub repository public for now and approved a safe hygiene/lint pass.
 
 ## Current state
 
 - **DTP software category:** client implementation
 - **Development state:** MVP
 - **Commercial status:** needs controlled pilot / deployment hardening
-- **Last verified:** 2026-05-31 15:48 BST
+- **Last verified:** 2026-05-31 16:17 BST
 - **Works locally:** partial
-- **Tests:** backend unit tests pass; frontend build passes; frontend lint fails on pre-existing code-quality issues
+- **Tests:** backend unit tests pass; frontend lint passes; frontend build passes
 - **Main risks:**
-  - The DTP GitHub repository is public at the time of verification. This may be intentional, but it should be confirmed because the project is client-specific and includes implementation details.
-  - The repository tracks generated/system files: 43 `__pycache__` files and 2 `.DS_Store` files are currently tracked.
+  - The DTP GitHub repository remains public by Steve's 2026-05-31 instruction. This is intentional for now, but the project is client-specific and should be revisited before wider deployment or external sharing.
   - Backend test collection across the whole repo fails if `test/test_whatsapp_template.py` runs without a real `backend_api/.env`; backend API tests pass when scoped to `backend_api/tests` with dummy non-secret environment values.
-  - Frontend lint currently fails with 18 errors and 1 warning, including a recent `Tickets.jsx` hook/immutability issue.
   - `npm ci` reports 5 frontend dependency vulnerabilities: 3 moderate and 2 high. No fix was applied during briefing.
   - Deployment uses real external services and WhatsApp/Meta/Claude credentials. Do not run live WhatsApp tests or mutate production data without Steve's explicit approval.
 
@@ -78,24 +76,24 @@ Verified commands and results:
 
 ```bash
 # backend test environment created outside the repo
-/opt/homebrew/bin/python3.12 -m venv /tmp/weg_backend_venv
-/tmp/weg_backend_venv/bin/pip install -r /Users/hudsonrebel/DTP\ Coding\ Projects/west_end_glass_maintenance_system/backend_api/requirements.txt
+/opt/homebrew/bin/python3.12 -m venv /tmp/weg-backend-venv312
+/tmp/weg-backend-venv312/bin/pip install -r /Users/hudsonrebel/DTP\ Coding\ Projects/west_end_glass_maintenance_system/backend_api/requirements.txt
 
 cd /Users/hudsonrebel/DTP Coding Projects/west_end_glass_maintenance_system
-META_WHATSAPP_TOKEN=*** \
+META_WHATSAPP_TOKEN=dummy \
 META_PHONE_NUMBER_ID=dummy \
-META_VERIFY_TOKEN=*** \
-META_APP_SECRET=*** \
-ANTHROPIC_API_KEY=*** \
-JWT_SECRET_KEY=*** \
-ADMIN_PASSWORD=*** \
-/tmp/weg_backend_venv/bin/python -m pytest backend_api/tests -q
+META_VERIFY_TOKEN=dummy \
+META_APP_SECRET=dummy \
+ANTHROPIC_API_KEY=dummy \
+JWT_SECRET_KEY=dummy \
+ADMIN_PASSWORD=dummy \
+/tmp/weg-backend-venv312/bin/python -m pytest backend_api/tests -q
 ```
 
-Result on 2026-05-31:
+Result on 2026-05-31 after the safe hygiene/lint pass:
 
 ```text
-47 passed, 140 warnings in 2.65s
+47 passed, 140 warnings in 1.76s
 ```
 
 Whole-repo pytest was also attempted:
@@ -115,13 +113,13 @@ npm run lint
 npm run build
 ```
 
-Results on 2026-05-31:
+Results on 2026-05-31 after the safe hygiene/lint pass:
 
 - `npm ci`: passed; reported 5 vulnerabilities, 3 moderate and 2 high.
-- `npm run lint`: failed with 18 errors and 1 warning.
+- `npm run lint`: passed.
 - `npm run build`: passed; Vite built `dist/` successfully and warned that one chunk is larger than 500 kB.
 
-The most significant lint finding is in `backend_admin_page/src/pages/Tickets.jsx`: `load` is accessed before declaration inside a `useEffect`, reported by `react-hooks/immutability`. Other failures are unused variables, React Fast Refresh export-shape warnings, and `__dirname` in `vite.config.js`.
+The safe lint pass fixed the `Tickets.jsx` hook/load ordering issue, unused frontend imports/variables, React Fast Refresh export-shape warnings by moving `useAuth` into a dedicated hook, and the ESM `__dirname` issue in `vite.config.js`.
 
 ## Architecture map
 
@@ -212,9 +210,8 @@ Sync findings on 2026-05-31:
 - The canonical DTP Coding Projects clone is clean at `9fa1486` before this briefing file is committed.
 - The Inbox copy remains dirty after fast-forward:
   - deleted tracked files: `.DS_Store`, `backend_api/.DS_Store`
-  - untracked files: `Documentation/marketing/west-end-glass-sales-overview.excalidraw`, `Documentation/marketing/west-end-glass-sales-overview.png`
-- The repo currently tracks 43 `__pycache__` files and 2 `.DS_Store` files. This should be cleaned with a normal Git hygiene commit if Steve approves the cleanup, not with history rewrite.
-- Backend test verification created untracked `__pycache__` files in the canonical clone. Tracked generated-file modifications were restored; untracked generated files were left in place rather than deleted without approval.
+  - the former untracked marketing files were moved to the Working Files project folder: `/Users/hudsonrebel/My Drive/DTP Working Files/Projects/Active_Projects/Westend Glass/Machine service manager/Marketing`
+- The safe hygiene pass expanded `.gitignore` for macOS/Python generated files and removed tracked `.DS_Store` and `__pycache__` artefacts from the Git index using normal Git history, not history rewrite. Local generated files were left on disk.
 
 ## Related DTP records
 
@@ -227,25 +224,21 @@ Sync findings on 2026-05-31:
 
 ## Open questions
 
-1. Should the DTP GitHub repository remain public, or should it be made private now that it is under the DTP organisation?
-2. Should the untracked Inbox marketing assets be moved into the West End Glass Working Files project folder, committed to the repository, or left as Inbox provenance for now?
-3. Should Hudson proceed with a repo hygiene PR/commit to untrack `__pycache__` and `.DS_Store`, expand `.gitignore`, and remove verification residue?
-4. Should frontend lint fixes and dependency audit fixes be treated as immediate pilot-readiness work, or deferred until Joe has finished the current feature branch/workstream?
-5. Is the canonical client/project name for delivery still “West End Glass Machine Service Manager”, or should the current system be renamed to “West End Glass Maintenance System” across wiki/project records?
+1. Is the canonical client/project name for delivery still “West End Glass Machine Service Manager”, or should the current system be renamed to “West End Glass Maintenance System” across wiki/project records?
+2. Should the remaining frontend dependency audit findings be fixed now, or held until Joe confirms whether dependency upgrades affect his current workstream?
+3. Should the public repository visibility be revisited before any pilot deployment, client demo, or broader sharing?
 
 ## Next recommended actions
 
 ### Hudson-owned
 
-- Create/update the DTP wiki project record with the DTP GitHub URL, canonical local repo path, latest verification results, and current open risks.
-- Create a `coding-projects` follow-up card for pilot-readiness cleanup covering frontend lint, dependency audit triage, and generated-file repo hygiene.
-- If Steve approves, run a scoped hygiene pass: update `.gitignore`, `git rm --cached` generated/system files, remove local verification residue, rerun backend tests/frontend build, then commit and push.
+- Keep the `coding-projects` pilot-readiness card updated with this safe-hygiene closeout and leave only dependency-audit / pilot-deployment items open.
+- Before any live WhatsApp/Meta/Claude test, get Steve's explicit approval for the exact live action and expected side effect.
 
 ### Steve-decision items
 
-- Decide whether the GitHub repo should be public or private.
-- Decide what to do with the Inbox-only marketing assets.
-- Decide whether Hudson should touch Joe's current codebase now, or leave engineering cleanup until Joe confirms his current work is stable.
+- Decide whether to tackle the remaining frontend dependency audit findings now or defer until Joe's current workstream is stable.
+- Confirm whether the client-facing name should remain “Machine Service Manager” or move to “Maintenance System”.
 
 ## Steve's notes
 

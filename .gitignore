@@ -5,3 +5,8 @@ backend_api/.env
 
 # macOS
 .DS_Store
+
+# Python generated files
+__pycache__/
+*.py[cod]
+.pytest_cache/

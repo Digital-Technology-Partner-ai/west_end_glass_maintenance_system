@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { useAutoRefresh } from "../hooks/useAutoRefresh";
 import client from "../api/client";
 import { toast } from "sonner";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import {
   Plus, Pencil, Trash2, Play,
   Loader2, X, CalendarClock, AlertCircle, Clock, User,
@@ -11,11 +11,11 @@ import {
 import StepEditor from "../components/StepEditor";
 
 // ── API helpers ───────────────────────────────────────────────────────────────
-export const getDailys = () => client.get("/dailys");
-export const createDaily = (data) => client.post("/dailys", data);
-export const updateDaily = (id, data) => client.patch(`/dailys/${id}`, data);
-export const deleteDaily = (id) => client.delete(`/dailys/${id}`);
-export const triggerDaily = (id) => client.post(`/dailys/${id}/trigger`);
+const getDailys = () => client.get("/dailys");
+const createDaily = (data) => client.post("/dailys", data);
+const updateDaily = (id, data) => client.patch(`/dailys/${id}`, data);
+const deleteDaily = (id) => client.delete(`/dailys/${id}`);
+const triggerDaily = (id) => client.post(`/dailys/${id}/trigger`);
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 export default function Dailys() {
@@ -294,7 +294,11 @@ function TemplateModal({ template, machines, users, onSave, onClose }) {
       return;
     }
     setSaving(true);
-    const serializedItems = items.map(({ id, ...rest }, i) => ({ ...rest, item_index: i }));
+    const serializedItems = items.map((item, i) => {
+      const rest = { ...item };
+      delete rest.id;
+      return { ...rest, item_index: i };
+    });
     await onSave({ machine_id: machineId, title, assigned_to: assignedTo, schedule_time: scheduleTime, active, items: serializedItems });
     setSaving(false);
   }

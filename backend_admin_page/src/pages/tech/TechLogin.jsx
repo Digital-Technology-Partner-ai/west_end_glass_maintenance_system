@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../hooks/useAuth";
 import client from "../../api/client";
 import { Wrench, AlertCircle, Loader2 } from "lucide-react";
 
