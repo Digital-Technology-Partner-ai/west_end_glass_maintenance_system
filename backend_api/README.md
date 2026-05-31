@@ -23,8 +23,8 @@ Required environment variables:
 
 ```env
 # Database
-MONGODB_URI=mongodb://localhost:27017
-DATABASE_NAME=maintenance_system
+MONGODB_URL=mongodb://localhost:27017
+MONGODB_DB_NAME=maintenance_system
 
 # Admin account (auto-created on startup)
 ADMIN_USERNAME=admin
@@ -33,7 +33,7 @@ ADMIN_PASSWORD=your_secure_password
 # WhatsApp / Meta Cloud API
 META_WHATSAPP_TOKEN=your_permanent_access_token_here
 META_PHONE_NUMBER_ID=your_phone_number_id_here
-META_WEBHOOK_VERIFY_TOKEN=your_webhook_verify_token_here
+META_VERIFY_TOKEN=your_webhook_verify_token_here
 
 # Claude AI
 ANTHROPIC_API_KEY=your_anthropic_api_key_here
@@ -101,8 +101,8 @@ docker compose up -d
 
 ### Webhooks (No Auth)
 
-- **POST** `/webhook/whatsapp` — Meta Cloud API webhook handler
-- **GET** `/webhook/whatsapp` — Webhook verification endpoint
+- **POST** `/webhook` — Meta Cloud API webhook handler
+- **GET** `/webhook` — Webhook verification endpoint
 
 ### Simulator (No Auth - Same as Live WhatsApp)
 
@@ -117,10 +117,10 @@ Test the WhatsApp bot without needing a real WhatsApp account:
 
 ```bash
 # Interactive mode
-python ../tools/simulate_chat.py
+python ../tools/simulate_whatsapp_chat.py
 
 # One-shot test
-python ../tools/simulate_chat.py --phone +15551234567 --message "WEG-MACHINE-0042"
+python ../tools/simulate_whatsapp_chat.py --phone +15551234567 --message "WEG-MACHINE-0042"
 ```
 
 See [../tools/README.md](../tools/README.md) for complete documentation.
@@ -143,7 +143,7 @@ pytest --cov=app tests/
 ```bash
 # Requires running backend
 docker compose up -d
-python ../tools/simulate_chat.py --phone +15551234567 --message "WEG-MACHINE-0042"
+python ../tools/simulate_whatsapp_chat.py --phone +15551234567 --message "WEG-MACHINE-0042"
 ```
 
 ## Architecture
@@ -234,7 +234,7 @@ backend_api/
 
 2. **Test bot with simulator:**
    ```bash
-   python ../tools/simulate_chat.py
+   python ../tools/simulate_whatsapp_chat.py
    ```
 
 3. **Monitor logs:**
@@ -277,7 +277,7 @@ Via Admin Dashboard or API:
 
 ```bash
 curl -X POST http://localhost:8000/users \
-  -H "Authorization: Bearer <admin_token>" \
+  -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{
     "phone_number": "+15551234567",
@@ -293,7 +293,7 @@ Via Admin Dashboard or API:
 
 ```bash
 curl -X POST http://localhost:8000/machines \
-  -H "Authorization: Bearer <admin_token>" \
+  -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{
     "machine_id": "WEG-MACHINE-0042",
@@ -305,7 +305,7 @@ curl -X POST http://localhost:8000/machines \
 ### Send Test Message via Simulator
 
 ```bash
-python ../tools/simulate_chat.py --phone +15551234567 --message "WEG-MACHINE-0042"
+python ../tools/simulate_whatsapp_chat.py --phone +15551234567 --message "WEG-MACHINE-0042"
 ```
 
 ## Debugging
@@ -376,7 +376,7 @@ docker build -t west-end-glass-api:latest .
 | MongoDB connection error | Ensure mongo container is running: `docker compose ps` |
 | 401 Unauthorized | Check JWT token in Authorization header |
 | 500 Claude API error | Verify ANTHROPIC_API_KEY in .env |
-| Webhook not firing | Check META_WEBHOOK_VERIFY_TOKEN match |
+| Webhook not firing | Check `META_VERIFY_TOKEN` in `backend_api/.env` matches the Meta webhook verify token |
 | Simulator no technicians | Create user in Admin Dashboard with active=true |
 
 ## Resources

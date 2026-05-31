@@ -8,12 +8,15 @@ This guide will help you set up and test the West End Glass Maintenance System l
 
 - Docker & Docker Compose
 - Python 3.8+
-- `requests` library: `pip install requests`
+- `requests` library: `pip install -r tools/requirements.txt`
+- Backend settings in `backend_api/.env` (start from `backend_api/.env.example`)
 
-### 1. Start the System
+### 1. Configure and start the system
 
 ```bash
 # From the project root
+cp backend_api/.env.example backend_api/.env
+# Edit backend_api/.env and replace the placeholder values, then:
 docker compose up -d
 
 # Verify services are running
@@ -21,9 +24,9 @@ docker compose ps
 ```
 
 You should see:
-- `mongo` (MongoDB database)
-- `fastapi-app` (Backend API at http://localhost:8000)
-- `admin-frontend` (Admin Dashboard at http://localhost:3030)
+- `mongo` / `weg-mongo` (MongoDB database)
+- `fastapi-app` / `weg-api` (Backend API on host port http://localhost:8835)
+- `admin-frontend` / `weg-frontend` (Admin Dashboard at http://localhost:3030)
 
 ### 2. Access the Admin Dashboard
 
@@ -64,13 +67,13 @@ Now test the bot using the CLI simulator:
 
 ```bash
 # Interactive mode (pick technician from list)
-python tools/simulate_chat.py
+python tools/simulate_whatsapp_chat.py --api-url http://localhost:8835
 
 # Or specify directly
-python tools/simulate_chat.py --phone +15551234567
+python tools/simulate_whatsapp_chat.py --api-url http://localhost:8835 --phone +155****4567
 
 # Send a test message
-python tools/simulate_chat.py --phone +15551234567 --message "WEG-MACHINE-0042"
+python tools/simulate_whatsapp_chat.py --api-url http://localhost:8835 --phone +155****4567 --message "WEG-MACHINE-0042"
 ```
 
 The simulator will:
@@ -95,8 +98,8 @@ For more details, see [tools/README.md](tools/README.md).
          │                        │
          ▼ Real WhatsApp API      ▼ CLI Simulator
     ┌──────────────────┐    ┌──────────────────┐
-    │  Meta Cloud API  │    │  tools/simulate  │
-    │  Webhook Handler │    │  _chat.py        │
+    │  Meta Cloud API  │    │  tools/simulate_ │
+    │  Webhook Handler │    │  whatsapp_chat.py│
     └────────┬─────────┘    └────────┬─────────┘
              │                       │
              └───────────┬───────────┘
@@ -131,7 +134,7 @@ For more details, see [tools/README.md](tools/README.md).
 
 1. Create a ticket for `WEG-MACHINE-0042` in the admin dashboard
 2. Assign to `+15551234567`
-3. Run: `python tools/simulate_chat.py --phone +15551234567 --message "WEG-MACHINE-0042"`
+3. Run: `python tools/simulate_whatsapp_chat.py --api-url http://localhost:8835 --phone +15551234567 --message "WEG-MACHINE-0042"`
 4. Bot responds with first step
 5. Continue chatting with bot to complete steps
 
@@ -141,20 +144,20 @@ Test how the system handles errors:
 
 ```bash
 # Invalid machine ID
-python tools/simulate_chat.py --phone +15551234567 --message "WEG-MACHINE-INVALID"
+python tools/simulate_whatsapp_chat.py --api-url http://localhost:8835 --phone +15551234567 --message "WEG-MACHINE-INVALID"
 
 # Unauthorized technician (phone not in system)
-python tools/simulate_chat.py --phone +12025551234 --message "test"
+python tools/simulate_whatsapp_chat.py --api-url http://localhost:8835 --phone +12025551234 --message "test"
 
 # No assigned tickets
-python tools/simulate_chat.py --phone +15551234567 --message "random message"
+python tools/simulate_whatsapp_chat.py --api-url http://localhost:8835 --phone +15551234567 --message "random message"
 ```
 
 ### Scenario 3: Multi-Turn Conversation
 
 ```bash
 # Start session
-python tools/simulate_chat.py --phone +15551234567
+python tools/simulate_whatsapp_chat.py --api-url http://localhost:8835 --phone +15551234567
 
 # In the interactive prompt:
 [+15551234567] > WEG-MACHINE-0042
@@ -178,7 +181,7 @@ python tools/simulate_chat.py --phone +15551234567
 |------|---------|
 | `backend_api/` | FastAPI backend, message processing, Claude integration |
 | `backend_admin_page/` | React admin dashboard |
-| `tools/simulate_chat.py` | WhatsApp bot simulator CLI |
+| `tools/simulate_whatsapp_chat.py` | WhatsApp bot simulator CLI |
 | `tools/README.md` | Complete tools documentation |
 | `Documentation/` | Architecture & design docs |
 | `docker-compose.yml` | Service configuration |
@@ -206,11 +209,11 @@ db.audit_logs.find()
 
 ### Check API Health
 ```bash
-curl http://localhost:8000/health
+curl http://localhost:8835/health
 ```
 
 ### OpenAPI Docs
-Open http://localhost:8000/docs in your browser for interactive API documentation.
+Open http://localhost:8835/docs in your browser for interactive API documentation.
 
 ---
 
@@ -226,7 +229,7 @@ docker compose down
 
 - [Tools Documentation](tools/README.md) — Detailed guide to CLI tools
 - [Architecture Overview](Documentation/JoesTechTake.md) — System design & NFC flows
-- [Backend API Docs](http://localhost:8000/docs) — Interactive API reference
+- [Backend API Docs](http://localhost:8835/docs) — Interactive API reference
 
 ---
 

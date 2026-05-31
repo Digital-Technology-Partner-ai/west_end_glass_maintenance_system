@@ -49,13 +49,13 @@ The dashboard connects to the backend API. By default it uses `http://localhost:
 To change, update in `src/api/client.js`:
 
 ```javascript
-const API_BASE_URL = process.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 ```
 
 Or set via environment variable:
 
 ```bash
-VITE_API_URL=http://your-api-server:8000 npm run dev
+VITE_API_BASE_URL=http://your-api-server:8000 npm run dev
 ```
 
 ### Authentication
@@ -245,7 +245,7 @@ export default function MyComponent() {
 While testing the dashboard, also test the technician bot:
 
 ```bash
-python ../tools/simulate_chat.py
+python ../tools/simulate_whatsapp_chat.py
 ```
 
 This lets you see how technicians interact with tickets you create.
@@ -286,7 +286,7 @@ docker build -t west-end-glass-admin:latest .
 ### Environment Variables for Docker
 
 ```dockerfile
-ENV VITE_API_URL=http://api:8000
+ENV VITE_API_BASE_URL=http://api:8000
 ```
 
 ## Performance Considerations

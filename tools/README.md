@@ -6,12 +6,12 @@ This directory contains CLI tools for testing, simulating, and managing the West
 
 | Tool | Purpose | Use Case |
 |------|---------|----------|
-| `simulate_chat.py` | Simulate WhatsApp bot interactions | Test technician workflows, bot responses |
+| `simulate_whatsapp_chat.py` | Simulate WhatsApp bot interactions | Test technician workflows, bot responses |
 | `admin_cli.py` | Remote dashboard management | Create tickets, manage users, view logs from CLI |
 
 ---
 
-## 🤖 WhatsApp Bot Simulator (`simulate_chat.py`)
+## 🤖 WhatsApp Bot Simulator (`simulate_whatsapp_chat.py`)
 
 **What it does:** Tests the WhatsApp bot that technicians interact with in the field. Simulates the complete message processing pipeline:
 - Phone number whitelist auth
@@ -22,17 +22,17 @@ This directory contains CLI tools for testing, simulating, and managing the West
 ### Quick Start
 
 ```bash
-# Interactive mode (defaults to John Smith +15551234567)
-python tools/simulate_chat.py
+# Interactive mode (uses the script default technician if --phone is omitted)
+python tools/simulate_whatsapp_chat.py --api-url http://localhost:8835
 
 # Interactive mode (specify different technician)
-python tools/simulate_chat.py --phone +15559876543
+python tools/simulate_whatsapp_chat.py --api-url http://localhost:8835 --phone +155****6543
 
-# Send a single message and exit (uses default technician)
-python tools/simulate_chat.py --message "WEG-MACHINE-0042"
+# Send a single message and exit
+python tools/simulate_whatsapp_chat.py --api-url http://localhost:8835 --message "WEG-MACHINE-0042"
 
 # Custom API endpoint
-python tools/simulate_chat.py --api-url http://localhost:8001
+python tools/simulate_whatsapp_chat.py --api-url http://localhost:8000
 ```
 
 ### Interactive Commands
@@ -86,8 +86,8 @@ python tools/simulate_chat.py --api-url http://localhost:8001
 ### Prerequisites
 
 - Python 3.8+
-- `requests` library: `pip install requests`
-- Backend running at `http://localhost:8000` (or custom URL)
+- `requests` library: `pip install -r tools/requirements.txt`
+- Backend running at `http://localhost:8835` for the Docker Compose stack, or `http://localhost:8000` when running the backend directly
 - At least one active technician in the database
 
 ### How It Works
@@ -438,7 +438,7 @@ Role Check (super_admin/editor/viewer) → Permission Check
 1. Login to Admin Dashboard
 2. Create a ticket for WEG-MACHINE-0042
 3. Assign to your test phone number
-4. Run: python tools/simulate_chat.py
+4. Run: python tools/simulate_whatsapp_chat.py
 5. Send "WEG-MACHINE-0042" to start ticket
 6. Chat to complete steps
 ```
@@ -494,6 +494,6 @@ For more details on the message pipeline, see:
 ## 📚 Related Documentation
 
 - Architecture: See `Documentation/` folder
-- API Endpoints: Backend OpenAPI docs at `http://localhost:8000/docs`
+- API Endpoints: Backend OpenAPI docs at `http://localhost:8835/docs` for the Docker Compose stack, or `http://localhost:8000/docs` when running the backend directly
 - Admin Dashboard: `backend_admin_page/README.md`
-- Tech Portal: `backend_tech_portal/` (if exists)
+- Technician screens: routes under `backend_admin_page/src/pages/tech/`

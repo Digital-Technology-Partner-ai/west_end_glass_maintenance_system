@@ -7,7 +7,7 @@ This document explains how to use the West End Glass testing tools as part of yo
 ### 1. 🤖 WhatsApp Bot Testing (CLI Simulator)
 
 **What to test:** The WhatsApp bot that field technicians use  
-**Tool:** `python tools/simulate_chat.py`  
+**Tool:** `python tools/simulate_whatsapp_chat.py`
 **Auth:** Phone whitelist (no password needed)  
 **Use cases:**
 - Test bot responses to technician messages
@@ -18,7 +18,7 @@ This document explains how to use the West End Glass testing tools as part of yo
 **Example workflow:**
 ```bash
 # Start interactive session
-python tools/simulate_chat.py
+python tools/simulate_whatsapp_chat.py --api-url http://localhost:8835
 
 # Pick a technician from the list, then:
 [+15551234567] > WEG-MACHINE-0042      # Start ticket
@@ -74,7 +74,7 @@ See [test/test_whatsapp_text.py](test/test_whatsapp_text.py) for instructions.
    └─ At least one ticket assigned to the technician
 
 2. Run the CLI simulator locally
-   python tools/simulate_chat.py
+   python tools/simulate_whatsapp_chat.py --api-url http://localhost:8835
 
 3. Test various messages and scenarios
    ├─ Valid machine IDs (WEG-MACHINE-XXXX)
@@ -143,7 +143,7 @@ See [test/test_whatsapp_text.py](test/test_whatsapp_text.py) for instructions.
 #    - Steps: [Inspect pump, Check filter, Lubricate bearings]
 
 # 2. Technician starts work via WhatsApp
-python tools/simulate_chat.py --phone +15551234567 --message "WEG-MACHINE-0042"
+python tools/simulate_whatsapp_chat.py --api-url http://localhost:8835 --phone +15551234567 --message "WEG-MACHINE-0042"
 
 # 3. Bot responds with first step
 # 🤖 Bot Response:
@@ -174,7 +174,7 @@ python tools/simulate_chat.py --phone +15551234567 --message "WEG-MACHINE-0042"
 ### ⚠️ Error Case: Invalid Machine
 
 ```bash
-python tools/simulate_chat.py --phone +15551234567 --message "WEG-MACHINE-INVALID"
+python tools/simulate_whatsapp_chat.py --api-url http://localhost:8835 --phone +15551234567 --message "WEG-MACHINE-INVALID"
 
 # Expected response:
 # 🤖 Bot Response:
@@ -186,7 +186,7 @@ python tools/simulate_chat.py --phone +15551234567 --message "WEG-MACHINE-INVALI
 ### 🔒 Auth Case: Unauthorized Phone
 
 ```bash
-python tools/simulate_chat.py --phone +12025551234
+python tools/simulate_whatsapp_chat.py --api-url http://localhost:8835 --phone +12025551234
 
 # Expected response:
 # ⛔ UNAUTHORIZED
@@ -200,13 +200,13 @@ python tools/simulate_chat.py --phone +12025551234
 
 ### Check if Backend is Running
 ```bash
-curl http://localhost:8000/health
+curl http://localhost:8835/health
 # Expected: {"status": "ok"}
 ```
 
 ### Check Active Technicians
 ```bash
-curl http://localhost:8000/simulate/users
+curl http://localhost:8835/simulate/users
 # Expected: JSON array of active users
 ```
 
@@ -231,7 +231,7 @@ docker compose logs fastapi-app | grep -i claude
 ### Verbose Simulator Output
 ```bash
 # Add debugging to see HTTP requests
-HTTP_DEBUG=1 python tools/simulate_chat.py --phone +15551234567
+HTTP_DEBUG=1 python tools/simulate_whatsapp_chat.py --api-url http://localhost:8835 --phone +15551234567
 ```
 
 ---
@@ -324,7 +324,7 @@ When integrating with CI/CD:
 
 ```bash
 # Run simulator test
-python tools/simulate_chat.py \
+python tools/simulate_whatsapp_chat.py \
   --api-url http://test-backend:8000 \
   --phone +15551234567 \
   --message "WEG-MACHINE-TEST"
@@ -348,16 +348,16 @@ docker compose ps
 docker compose logs -f fastapi-app
 
 # Test bot simulator
-python tools/simulate_chat.py
+python tools/simulate_whatsapp_chat.py --api-url http://localhost:8835
 
 # Test real WhatsApp delivery (with credentials)
 python test/test_whatsapp_text.py
 
 # Check API health
-curl http://localhost:8000/health
+curl http://localhost:8835/health
 
 # View OpenAPI docs
-open http://localhost:8000/docs
+open http://localhost:8835/docs
 
 # Stop everything
 docker compose down
