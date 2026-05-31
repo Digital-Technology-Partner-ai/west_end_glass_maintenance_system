@@ -196,10 +196,10 @@ GitHub repo:
 https://github.com/Digital-Technology-Partner-ai/west_end_glass_maintenance_system
 ```
 
-Inbox/source copy inspected:
+Original Inbox/source copy inspected, then moved out of the live Inbox during closeout:
 
 ```text
-/Users/hudsonrebel/My Drive/DTP Inbox/west_end_glass_maintenance_system
+/Users/hudsonrebel/My Drive/DTP Working Files/Projects/Active_Projects/Westend Glass/Machine service manager/processed-source/west_end_glass_maintenance_system__processed_20260531
 ```
 
 Sync findings on 2026-05-31:
@@ -208,7 +208,7 @@ Sync findings on 2026-05-31:
 - The Inbox repo originally still pointed at `https://github.com/Virgelsnake/west_end_glass_maintenance_system.git` and was 8 commits behind DTP `main`.
 - Hudson repointed the Inbox repo origin to the DTP org URL and fast-forwarded it to commit `9fa1486`.
 - The canonical DTP Coding Projects clone is clean at `9fa1486` before this briefing file is committed.
-- The Inbox copy remains dirty after fast-forward:
+- The original Inbox copy was moved to the Working Files `processed-source/` folder after briefing closeout so the live DTP Inbox is not used as an archive. It remains a dirty provenance snapshot after fast-forward:
   - deleted tracked files: `.DS_Store`, `backend_api/.DS_Store`
   - the former untracked marketing files were moved to the Working Files project folder: `/Users/hudsonrebel/My Drive/DTP Working Files/Projects/Active_Projects/Westend Glass/Machine service manager/Marketing`
 - The safe hygiene pass expanded `.gitignore` for macOS/Python generated files and removed tracked `.DS_Store` and `__pycache__` artefacts from the Git index using normal Git history, not history rewrite. Local generated files were left on disk.
@@ -218,7 +218,7 @@ Sync findings on 2026-05-31:
 - **Wiki product page:** None yet
 - **Wiki project page:** `[[west-end-glass-machine-service-manager]]`
 - **Working Files folder:** `/Users/hudsonrebel/My Drive/DTP Working Files/Projects/Active_Projects/Westend Glass/Machine service manager`
-- **Inbox/source folder:** `/Users/hudsonrebel/My Drive/DTP Inbox/west_end_glass_maintenance_system`
+- **Processed source snapshot:** `/Users/hudsonrebel/My Drive/DTP Working Files/Projects/Active_Projects/Westend Glass/Machine service manager/processed-source/west_end_glass_maintenance_system__processed_20260531`
 - **Kanban board:** `coding-projects`
 - **Related client/project:** `[[west-end-glass]]`, `[[joe-ronnie]]`
 
